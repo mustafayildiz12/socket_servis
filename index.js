@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     })
 
   });
-  socket.on('callMessages',async (roomNumber)=>{
+  socket.on('callMessages', async (roomNumber) => {
     socket.emit('loadMessages');
     loadMessages = await getMessages(roomNumber)
     socket.emit('messages', loadMessages)
@@ -72,11 +72,11 @@ io.on('connection', (socket) => {
       id: socket.id
     });
     message.save().then(() => {
-      Message.find({"room": data.room}).then(result => {
+      Message.find({ "room": data.room }).then(result => {
         socket.emit('messages', result)
-      
+
       })
-     
+
     });
     console.log('Data: ', data);
   });
@@ -90,11 +90,11 @@ io.on('connection', (socket) => {
     }, time);
 
   });
-  socket.on("status",(data)=> {
+  socket.on("status", (data) => {
     console.log(data)
   })
 
-  socket.on("status",(data)=> {
+  socket.on("status", (data) => {
     console.log(data)
   })
 
@@ -105,13 +105,13 @@ io.on('connection', (socket) => {
   });
 
   async function getMessages(roomdata) {
-    return Message.find({"room": roomdata})
+    return Message.find({ "room": roomdata })
   }
 
 });
 
 // Sunucuyu 3000 portunda dinlemeye başlar
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log('Sunucu çalışıyor: http://localhost:3000');
 });
 
