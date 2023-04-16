@@ -1,4 +1,9 @@
-const app = require('http').createServer();
+
+const requestListener = function (req, res) {
+  res.writeHead(200);
+  res.end("Hello World from Node.js HTTP Server");
+}
+const app = require('http').createServer(requestListener);
 const io = require('socket.io')(app);
 const mongoose = require('mongoose');
 const Room = require('./Models/rooms');
@@ -116,4 +121,8 @@ io.on('connection', (socket) => {
 app.listen(process.env.PORT || 3000, () => {
   console.log('Sunucu çalışıyor: http://localhost:3000');
 });
+
+// app.listen(port, host, () => {
+//   console.log(`Server is running on http://${host}:${port}`);
+// });
 
