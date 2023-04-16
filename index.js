@@ -32,9 +32,11 @@ io.on('connection', (socket) => {
     })
 
   });
-
-
-
+  socket.on('callMessages',async (roomNumber)=>{
+    socket.emit('loadMessages');
+    loadMessages = await getMessages(roomNumber)
+    socket.emit('messages', loadMessages)
+  })
   socket.on('createRoom', (data) => {
 
     const room = Room({
@@ -54,7 +56,7 @@ io.on('connection', (socket) => {
     // Kullanıcıyı belirtilen odaya katılmaya zorlar
     socket.join(room);
     socket.emit('loadMessages');
-    loadMessages = await getMessages()
+    loadMessages = await getMessages(room)
     socket.emit('messages', loadMessages)
 
 
@@ -70,9 +72,11 @@ io.on('connection', (socket) => {
       id: socket.id
     });
     message.save().then(() => {
-      Message.find().then(result => {
+      Message.find({"room": data.room}).then(result => {
         socket.emit('messages', result)
+      
       })
+     
     });
     console.log('Data: ', data);
   });
@@ -86,6 +90,13 @@ io.on('connection', (socket) => {
     }, time);
 
   });
+  socket.on("status",(data)=> {
+    console.log(data)
+  })
+
+  socket.on("status",(data)=> {
+    console.log(data)
+  })
 
   socket.on('disconnect', () => {
     console.log(`Bağlantı kesildi: ${socket.id}`);
@@ -93,8 +104,8 @@ io.on('connection', (socket) => {
     delete user[socket.id];
   });
 
-  async function getMessages() {
-    return Message.find().then()
+  async function getMessages(roomdata) {
+    return Message.find({"room": roomdata})
   }
 
 });
@@ -103,3 +114,4 @@ io.on('connection', (socket) => {
 app.listen(3000, () => {
   console.log('Sunucu çalışıyor: http://localhost:3000');
 });
+
