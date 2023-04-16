@@ -1,19 +1,12 @@
-const express = require('express');
-const socketIO = require('socket.io');
+const app = require('http').createServer();
+const io = require('socket.io')(app);
 const mongoose = require('mongoose');
 const Room = require('./Models/rooms');
 const Message = require('./Models/message');
 
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
 
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-const io = socketIO(server);
-
-mongoose.connect('mongodb+srv://mustafayildiz12:MlKTrFwB5ToVwtLv@cluster0.f4vmug6.mongodb.net/?retryWrites=true&w=majority', {
+var db = mongoose.connect('mongodb+srv://mustafayildiz12:MlKTrFwB5ToVwtLv@cluster0.f4vmug6.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -118,6 +111,9 @@ io.on('connection', (socket) => {
   }
 
 });
-setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 
+// Sunucuyu 3000 portunda dinlemeye başlar
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Sunucu çalışıyor: http://localhost:3000');
+});
 
